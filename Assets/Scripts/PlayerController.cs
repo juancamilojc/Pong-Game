@@ -13,10 +13,10 @@ public class PlayerController : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        gameManager.OnReset += ResetHandler;
+        gameManager.OnGameOver += GameOverHandler;
 
         initialPosition = transform.position;
-
-        gameManager.OnReset += ResetHandler;
     }
 
     // Update is called once per frame
@@ -45,6 +45,10 @@ public class PlayerController : MonoBehaviour {
     }
 
     void ResetHandler() {
-        
+        ResetPosition();
+    }
+
+    void GameOverHandler() {
+        ResetPosition();
     }
 }

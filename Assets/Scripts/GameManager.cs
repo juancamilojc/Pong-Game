@@ -12,20 +12,35 @@ public enum CommandType {
     play,
     pause,
     reset,
+    gameover,
     noop
 }
 
 public class GameManager : MonoBehaviour {
     public delegate void GameDelegate();
-    public event GameDelegate OnReset;
     public event GameDelegate OnPlay;
     public event GameDelegate OnPause;
+    public event GameDelegate OnReset;
+    public event GameDelegate OnPointScored;
+    public event GameDelegate OnGameOver;
+
+    private Scoreboard playerScoreboard;
+    private Scoreboard iaScoreboard;
 
     private GameState currentState;
     private CommandType command;
 
     // Start is called before the first frame update
     void Start() {
+        playerScoreboard = GameObject.Find("PlayerScoreZone").GetComponent<Scoreboard>();
+        iaScoreboard = GameObject.Find("IAScoreZone").GetComponent<Scoreboard>();
+
+        playerScoreboard.OnScored += ScoredPointHandler;
+        playerScoreboard.OnGameOver += GameOverHandler;
+        
+        iaScoreboard.OnScored += ScoredPointHandler;
+        iaScoreboard.OnGameOver += GameOverHandler;
+
         command = CommandType.play;
         currentState = GameState.stopped;
     }
@@ -44,14 +59,20 @@ public class GameManager : MonoBehaviour {
             break;
             case GameState.paused:
                 if (command == CommandType.play) {
-                    currentState = GameState.playing;
+                    this.currentState = GameState.playing;
                     OnPlay?.Invoke();
+                } else if (command == CommandType.reset) {
+                    this.currentState = GameState.stopped;
+                    OnReset?.Invoke();
                 }
             break;
             case GameState.stopped:
                 if (command == CommandType.play) {
-                    currentState = GameState.playing;
+                    this.currentState = GameState.playing;
                     OnPlay?.Invoke();
+                } else if (command == CommandType.gameover) {
+                    this.currentState = GameState.stopped;
+                    OnGameOver?.Invoke();
                 }
             break;
         }
@@ -59,5 +80,15 @@ public class GameManager : MonoBehaviour {
 
     public void SetCommand(CommandType cmd) {
         this.command = cmd;
+    }
+
+    void ScoredPointHandler() {
+        currentState = GameState.stopped;
+        OnPointScored?.Invoke();
+    }
+
+    void GameOverHandler() {
+        currentState = GameState.stopped;
+        OnGameOver?.Invoke();
     }
 }

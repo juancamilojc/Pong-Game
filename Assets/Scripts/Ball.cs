@@ -14,10 +14,12 @@ public class Ball : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         rb = GetComponent<Rigidbody>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         gameManager.OnPlay += PlayHandler;
         gameManager.OnReset += ResetHandler;
+        gameManager.OnPointScored += PointScoredHandler;
+        gameManager.OnGameOver += GameOverHandler;
     }
 
     // Update is called once per frame
@@ -51,6 +53,14 @@ public class Ball : MonoBehaviour {
     }
 
     void ResetHandler() {
+        ResetPosition();
+    }
+
+    void PointScoredHandler() {
+        ResetPosition();
+    }
+
+    void GameOverHandler() {
         ResetPosition();
     }
 }
