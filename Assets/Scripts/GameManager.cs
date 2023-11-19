@@ -36,10 +36,7 @@ public class GameManager : MonoBehaviour {
         iaScoreboard = GameObject.Find("IAScoreZone").GetComponent<Scoreboard>();
 
         playerScoreboard.OnScored += ScoredPointHandler;
-        playerScoreboard.OnGameOver += GameOverHandler;
-        
         iaScoreboard.OnScored += ScoredPointHandler;
-        iaScoreboard.OnGameOver += GameOverHandler;
 
         command = CommandType.play;
         currentState = GameState.stopped;
@@ -49,12 +46,15 @@ public class GameManager : MonoBehaviour {
     void Update() {
         switch(currentState) {
             case GameState.playing:
-                if (command == CommandType.reset) {
-                    this.currentState = GameState.stopped;
-                    OnReset?.Invoke();
-                } else if (command == CommandType.pause) {
+            if (command == CommandType.pause) {
                     this.currentState = GameState.paused;
                     OnPause?.Invoke();
+                } else if (command == CommandType.reset) {
+                    this.currentState = GameState.stopped;
+                    OnReset?.Invoke();
+                } else if (command == CommandType.gameover) {
+                    this.currentState = GameState.stopped;
+                    OnGameOver?.Invoke();
                 }
             break;
             case GameState.paused:
@@ -71,7 +71,6 @@ public class GameManager : MonoBehaviour {
                     this.currentState = GameState.playing;
                     OnPlay?.Invoke();
                 } else if (command == CommandType.gameover) {
-                    this.currentState = GameState.stopped;
                     OnGameOver?.Invoke();
                 }
             break;
@@ -85,10 +84,5 @@ public class GameManager : MonoBehaviour {
     void ScoredPointHandler() {
         currentState = GameState.stopped;
         OnPointScored?.Invoke();
-    }
-
-    void GameOverHandler() {
-        currentState = GameState.stopped;
-        OnGameOver?.Invoke();
     }
 }

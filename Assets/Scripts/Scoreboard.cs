@@ -13,8 +13,6 @@ public class Scoreboard : MonoBehaviour {
     private GameManager gameManager;
 
     public event Action OnScored;
-    public event Action OnGameOver;
-
 
     // Start is called before the first frame update
     void Start() {
@@ -23,6 +21,7 @@ public class Scoreboard : MonoBehaviour {
 
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         gameManager.OnReset += ResetHandler;
+        gameManager.OnGameOver += GameOverHandler;
     }
 
     // Update is called once per frame
@@ -64,9 +63,7 @@ public class Scoreboard : MonoBehaviour {
 
     private void CheckWinCondition(int score) {
         if (score >= finalScore) {
-            ResetPlayerScore();
-            ResetIAScore();
-            OnGameOver?.Invoke();
+            gameManager.SetCommand(CommandType.gameover);
         }
     }
 
@@ -81,6 +78,11 @@ public class Scoreboard : MonoBehaviour {
     }
 
     void ResetHandler() {
+        ResetPlayerScore();
+        ResetIAScore();
+    }
+
+    void GameOverHandler() {
         ResetPlayerScore();
         ResetIAScore();
     }
