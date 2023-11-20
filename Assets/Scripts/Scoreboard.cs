@@ -19,9 +19,8 @@ public class Scoreboard : MonoBehaviour {
         playerScoreText = GameObject.Find("PlayerScoreText").GetComponent<TextMeshProUGUI>();
         iaScoreText = GameObject.Find("IAScoreText").GetComponent<TextMeshProUGUI>();
 
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        gameManager.OnReset += ResetHandler;
-        gameManager.OnGameOver += GameOverHandler;
+        gameManager = FindObjectOfType<GameManager>();
+        OnGameManagerEvents(gameManager);
     }
 
     // Update is called once per frame
@@ -29,16 +28,21 @@ public class Scoreboard : MonoBehaviour {
         
     }
 
+    private void OnGameManagerEvents(GameManager gm) {
+        gm.OnReset += ResetHandler;
+        gm.OnGameOver += GameOverHandler;
+    }
+
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Ball")) {
             if (gameObject.CompareTag("PlayerScoreZone")) {
+                OnScored?.Invoke();
                 UpdatePlayerScore();
             } else if (gameObject.CompareTag("IAScoreZone")) {
+                OnScored?.Invoke();
                 UpdateIAScore();
             }
         }
-
-        OnScored?.Invoke();
     }
 
     public int GetPlayerScore() {
@@ -67,23 +71,18 @@ public class Scoreboard : MonoBehaviour {
         }
     }
 
-    private void ResetPlayerScore() {
+    private void ResetScoreboard() {
         scorePlayer = 0;
-        playerScoreText.text = "0";
-    }
-
-    private void ResetIAScore() {
         scoreIA = 0;
+        playerScoreText.text = "0";
         iaScoreText.text = "0";
     }
 
-    void ResetHandler() {
-        ResetPlayerScore();
-        ResetIAScore();
+    private void ResetHandler() {
+        ResetScoreboard();
     }
 
-    void GameOverHandler() {
-        ResetPlayerScore();
-        ResetIAScore();
+    private void GameOverHandler() {
+        ResetScoreboard();
     }
 }

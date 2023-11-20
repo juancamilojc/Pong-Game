@@ -6,7 +6,6 @@ using UnityEngine;
 public class Ball : MonoBehaviour {
     [SerializeField]
     private float speed = 10.0f;
-    private Vector3 initialDirection = Vector3.zero;
     private Vector3 initialPosition = Vector3.zero;
     private Rigidbody rb;
     private GameManager gameManager;
@@ -14,17 +13,22 @@ public class Ball : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         rb = GetComponent<Rigidbody>();
+        initialPosition = transform.position;
         
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        gameManager.OnPlay += PlayHandler;
-        gameManager.OnReset += ResetHandler;
-        gameManager.OnPointScored += PointScoredHandler;
-        gameManager.OnGameOver += GameOverHandler;
+        gameManager = FindObjectOfType<GameManager>();
+        OnGameManagerEvents(gameManager);
     }
 
     // Update is called once per frame
     void Update() {
         
+    }
+
+    private void OnGameManagerEvents(GameManager gm) {
+        gm.OnPlay += PlayHandler;
+        gm.OnReset += ResetHandler;
+        gm.OnPointScored += PointScoredHandler;
+        gm.OnGameOver += GameOverHandler;
     }
 
     public void SetSpeed(float newSpeed) {
@@ -33,10 +37,9 @@ public class Ball : MonoBehaviour {
 
     private void InitializeMovement() {
         int directionX = Random.Range(0, 2) == 0 ? -1 : 1;
+        Vector3 initialDirection = new Vector3(directionX, 0, 0);
+
         float angle = Random.Range(-45.0f, 45.0f);
-
-        initialDirection = new Vector3(directionX, 0, 0);
-
         var newDirection = Quaternion.AngleAxis(angle, new Vector3(0, 0, 1)) * initialDirection;
 
         rb.AddForce(newDirection * speed, ForceMode.VelocityChange);
@@ -45,22 +48,23 @@ public class Ball : MonoBehaviour {
     private void ResetPosition() {
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        rb.position = Vector3.zero;
+        rb.position = initialPosition;
     }
 
-    void PlayHandler() {
+    private void PlayHandler() {
         InitializeMovement();
     }
 
-    void ResetHandler() {
+    private void ResetHandler() {
         ResetPosition();
     }
 
-    void PointScoredHandler() {
+    private void PointScoredHandler() {
         ResetPosition();
+        InitializeMovement();
     }
 
-    void GameOverHandler() {
+    private void GameOverHandler() {
         ResetPosition();
     }
 }

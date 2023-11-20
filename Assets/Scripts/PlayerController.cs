@@ -12,21 +12,28 @@ public class PlayerController : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        gameManager.OnReset += ResetHandler;
-        gameManager.OnGameOver += GameOverHandler;
-
         initialPosition = transform.position;
+
+        gameManager = FindObjectOfType<GameManager>();
+        OnGameManagerEvents(gameManager);
     }
 
     // Update is called once per frame
     void Update() {
-        MovePlayer();
-        if (Input.GetKey(KeyCode.R)) {
+        if (gameManager.GetGameState() == GameState.playing) {
+            MovePlayer();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R)) {
             gameManager.SetCommand(CommandType.reset);
-        } else if (Input.GetKey(KeyCode.Space)) {
+        } else if (Input.GetKeyDown(KeyCode.Space)) {
             gameManager.SetCommand(CommandType.play);
         }
+    }
+
+    private void OnGameManagerEvents(GameManager gm) {
+        gm.OnReset += ResetHandler;
+        gm.OnGameOver += GameOverHandler;
     }
 
     private void MovePlayer() {
@@ -44,11 +51,11 @@ public class PlayerController : MonoBehaviour {
         transform.position = initialPosition;
     }
 
-    void ResetHandler() {
+    private void ResetHandler() {
         ResetPosition();
     }
 
-    void GameOverHandler() {
+    private void GameOverHandler() {
         ResetPosition();
     }
 }

@@ -26,7 +26,6 @@ public class GameManager : MonoBehaviour {
 
     private Scoreboard playerScoreboard;
     private Scoreboard iaScoreboard;
-
     private GameState currentState;
     private CommandType command;
 
@@ -34,12 +33,10 @@ public class GameManager : MonoBehaviour {
     void Start() {
         playerScoreboard = GameObject.Find("PlayerScoreZone").GetComponent<Scoreboard>();
         iaScoreboard = GameObject.Find("IAScoreZone").GetComponent<Scoreboard>();
+        OnScoreboardEvents(playerScoreboard, iaScoreboard);
 
-        playerScoreboard.OnScored += ScoredPointHandler;
-        iaScoreboard.OnScored += ScoredPointHandler;
-
-        command = CommandType.play;
         currentState = GameState.stopped;
+        InitializeGame();
     }
 
     // Update is called once per frame
@@ -77,12 +74,24 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    private void OnScoreboardEvents(Scoreboard player, Scoreboard ia) {
+        player.OnScored += ScoredPointHandler;
+        ia.OnScored += ScoredPointHandler;
+    }
+
     public void SetCommand(CommandType cmd) {
         this.command = cmd;
     }
 
+    public GameState GetGameState() {
+        return currentState;
+    }
+
+    private void InitializeGame() {
+        command = CommandType.play;
+    }
+
     void ScoredPointHandler() {
-        currentState = GameState.stopped;
         OnPointScored?.Invoke();
     }
 }
