@@ -1,14 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class IA : MonoBehaviour {
-    [SerializeField]
-    private float moveSpeed = 2.0f;
-    private float errorChance = 0.5f;
-    private float smoothness = 2.0f;
-    private float minY = -4.5f;
-    private float maxY = 4.5f;
+    [SerializeField] private float moveSpeed = 2.0f;
+    [SerializeField] private float errorChance = 0.4f;
+    private readonly float smoothness = 2.0f;
+    private readonly float minY = -4.5f;
+    private readonly float maxY = 4.5f;
     private Vector3 initialPosition;
     private Transform ball;
     private GameManager gameManager;
@@ -31,11 +28,17 @@ public class IA : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (gameManager.GetGameState() == GameState.playing) {
-            MoveIA();
+            Move();
         }
     }
 
-    private void MoveIA() {
+    private void SubscribeToEvents(GameManager gm) {
+        gm.OnPointScored += ResetPosition;
+        gm.OnReset += ResetPosition;
+        gm.OnGameOver += ResetPosition;
+    }
+
+    private void Move() {
         if (ball != null) {
             float timeToIntercept = Mathf.Abs((transform.position.x - ball.position.x) / moveSpeed);
             float predictedY = ball.position.y + (ball.GetComponent<Rigidbody>().velocity.y * timeToIntercept);
@@ -49,12 +52,6 @@ public class IA : MonoBehaviour {
             float smoothMovement = Mathf.Lerp(transform.position.y, newY, Time.deltaTime * smoothness);
             transform.position = new Vector3(transform.position.x, smoothMovement, transform.position.z);
         }
-    }
-
-    private void SubscribeToEvents(GameManager gm) {
-        gm.OnPointScored += ResetPosition;
-        gm.OnReset += ResetPosition;
-        gm.OnGameOver += ResetPosition;
     }
 
     public void SetSpeed(float newSpeed) {

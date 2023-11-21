@@ -1,14 +1,14 @@
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
-    [SerializeField]
-    private float moveSpeed = 10.0f;
-    private float minY = -4.5f;
-    private float maxY = 4.5f;
+    [SerializeField] private float moveSpeed = 10.0f;
+    private readonly float minY = -4.5f;
+    private readonly float maxY = 4.5f;
     private Vector3 initialPosition;
     private GameManager gameManager;
 
-    void Start() {
+    // Awake is called when the script instance is being loaded
+    void Awake() {
         initialPosition = transform.position;
 
         gameManager = FindObjectOfType<GameManager>();
@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour {
 
     void Update() {
         if (gameManager.GetGameState() == GameState.playing) {
-            MovePlayer();
+            Move();
         }
 
         if (Input.GetKeyDown(KeyCode.R)) {
@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour {
         gm.OnGameOver += ResetPosition;
     }
 
-    private void MovePlayer() {
+    private void Move() {
         float moveInput = Input.GetAxis("Vertical");
         float newY = transform.position.y + moveInput * moveSpeed * Time.deltaTime;
         float clampedY = Mathf.Clamp(newY, minY, maxY);

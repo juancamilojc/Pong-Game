@@ -1,21 +1,19 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class Scoreboard : MonoBehaviour {
     private TextMeshProUGUI playerScoreText;
     private TextMeshProUGUI iaScoreText;
+    [SerializeField] private int finalScore = 3;
     private int scorePlayer = 0;
     private int scoreIA = 0;
-    [SerializeField]
-    private int finalScore = 3;
     private GameManager gameManager;
 
     public event Action OnScored;
 
-    // Start is called before the first frame update
-    void Start() {
+    // Awake is called when the script instance is being loaded
+    void Awake() {
         playerScoreText = GameObject.Find("PlayerScoreText").GetComponent<TextMeshProUGUI>();
         iaScoreText = GameObject.Find("IAScoreText").GetComponent<TextMeshProUGUI>();
 

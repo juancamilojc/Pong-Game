@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum GameState {
@@ -21,6 +19,7 @@ public class GameManager : MonoBehaviour {
     public delegate void GameDelegate();
     public event GameDelegate OnPlay;
     public event GameDelegate OnPause;
+    public event GameDelegate OnResume;
     public event GameDelegate OnReset;
     public event GameDelegate OnPointScored;
     public event GameDelegate OnGameOver;
@@ -37,7 +36,7 @@ public class GameManager : MonoBehaviour {
         SubscribeToEvents(playerScoreboard, iaScoreboard);
 
         currentState = GameState.stopped;
-        Invoke("InitializeGame", 2.0f);
+        Invoke(nameof(InitializeGame), 2.5f);
     }
 
     // Update is called once per frame
@@ -45,27 +44,28 @@ public class GameManager : MonoBehaviour {
         switch(currentState) {
             case GameState.playing:
             if (command == CommandType.pause) {
-                    this.currentState = GameState.paused;
+                    currentState = GameState.paused;
                     OnPause?.Invoke();
                 } else if (command == CommandType.reset) {
-                    this.currentState = GameState.stopped;
+                    currentState = GameState.stopped;
                     OnReset?.Invoke();
                 } else if (command == CommandType.gameover) {
-                    this.currentState = GameState.stopped;
+                    currentState = GameState.stopped;
                     OnGameOver?.Invoke();
                 }
             break;
             case GameState.paused:
                 if (command == CommandType.resume) {
-                    this.currentState = GameState.playing;
+                    currentState = GameState.playing;
+                    OnResume?.Invoke();
                 } else if (command == CommandType.reset) {
-                    this.currentState = GameState.stopped;
+                    currentState = GameState.stopped;
                     OnReset?.Invoke();
                 }
             break;
             case GameState.stopped:
                 if (command == CommandType.play) {
-                    this.currentState = GameState.playing;
+                    currentState = GameState.playing;
                     OnPlay?.Invoke();
                 } else if (command == CommandType.gameover) {
                     OnGameOver?.Invoke();
@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviour {
     }
 
     public void SetCommand(CommandType cmd) {
-        this.command = cmd;
+        command = cmd;
     }
 
     public GameState GetGameState() {

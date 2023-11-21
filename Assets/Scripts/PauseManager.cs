@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PauseManager : MonoBehaviour {
     private GameManager gameManager;
 
-    // Start is called before the first frame update
-    void Start() {
+    // Awake is called when the script instance is being loaded
+    void Awake() {
         gameManager = FindObjectOfType<GameManager>();
     }
 
