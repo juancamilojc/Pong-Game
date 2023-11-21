@@ -20,7 +20,7 @@ public class Scoreboard : MonoBehaviour {
         iaScoreText = GameObject.Find("IAScoreText").GetComponent<TextMeshProUGUI>();
 
         gameManager = FindObjectOfType<GameManager>();
-        OnGameManagerEvents(gameManager);
+        SubscribeToEvents(gameManager);
     }
 
     // Update is called once per frame
@@ -28,9 +28,9 @@ public class Scoreboard : MonoBehaviour {
         
     }
 
-    private void OnGameManagerEvents(GameManager gm) {
-        gm.OnReset += ResetHandler;
-        gm.OnGameOver += GameOverHandler;
+    private void SubscribeToEvents(GameManager gm) {
+        gm.OnReset += ResetScoreboard;
+        gm.OnGameOver += ResetScoreboard;
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -76,13 +76,5 @@ public class Scoreboard : MonoBehaviour {
         scoreIA = 0;
         playerScoreText.text = "0";
         iaScoreText.text = "0";
-    }
-
-    private void ResetHandler() {
-        ResetScoreboard();
-    }
-
-    private void GameOverHandler() {
-        ResetScoreboard();
     }
 }

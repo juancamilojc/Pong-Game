@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour {
     [SerializeField]
-    private float speed = 10.0f;
-    private Vector3 initialPosition = Vector3.zero;
+    private float speed = 11.0f;
+    private Vector3 initialPosition;
     private Rigidbody rb;
     private GameManager gameManager;
 
@@ -16,7 +16,7 @@ public class Ball : MonoBehaviour {
         initialPosition = transform.position;
         
         gameManager = FindObjectOfType<GameManager>();
-        OnGameManagerEvents(gameManager);
+        SubscribeToEvents(gameManager);
     }
 
     // Update is called once per frame
@@ -24,11 +24,11 @@ public class Ball : MonoBehaviour {
         
     }
 
-    private void OnGameManagerEvents(GameManager gm) {
-        gm.OnPlay += PlayHandler;
-        gm.OnReset += ResetHandler;
+    private void SubscribeToEvents(GameManager gm) {
+        gm.OnPlay += InitializeMovement;
+        gm.OnReset += ResetPosition;
+        gm.OnGameOver += ResetPosition;
         gm.OnPointScored += PointScoredHandler;
-        gm.OnGameOver += GameOverHandler;
     }
 
     public void SetSpeed(float newSpeed) {
@@ -36,10 +36,9 @@ public class Ball : MonoBehaviour {
     }
 
     private void InitializeMovement() {
-        int directionX = Random.Range(0, 2) == 0 ? -1 : 1;
-        Vector3 initialDirection = new Vector3(directionX, 0, 0);
+        Vector3 initialDirection = new Vector3(Random.Range(0, 2) == 0 ? -1 : 1, 0, 0);
 
-        float angle = Random.Range(-45.0f, 45.0f);
+        float angle = Random.Range(20.0f, 30.0f) * (Random.Range(0, 2) == 0 ? 1 : -1);
         var newDirection = Quaternion.AngleAxis(angle, new Vector3(0, 0, 1)) * initialDirection;
 
         rb.AddForce(newDirection * speed, ForceMode.VelocityChange);
@@ -51,20 +50,8 @@ public class Ball : MonoBehaviour {
         rb.position = initialPosition;
     }
 
-    private void PlayHandler() {
-        InitializeMovement();
-    }
-
-    private void ResetHandler() {
-        ResetPosition();
-    }
-
     private void PointScoredHandler() {
         ResetPosition();
-        InitializeMovement();
-    }
-
-    private void GameOverHandler() {
-        ResetPosition();
+        Invoke("InitializeMovement", 0.5f);
     }
 }

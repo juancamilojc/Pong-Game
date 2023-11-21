@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
@@ -10,15 +8,13 @@ public class PlayerController : MonoBehaviour {
     private Vector3 initialPosition;
     private GameManager gameManager;
 
-    // Start is called before the first frame update
     void Start() {
         initialPosition = transform.position;
 
         gameManager = FindObjectOfType<GameManager>();
-        OnGameManagerEvents(gameManager);
+        SubscribeToEvents(gameManager);
     }
 
-    // Update is called once per frame
     void Update() {
         if (gameManager.GetGameState() == GameState.playing) {
             MovePlayer();
@@ -31,31 +27,20 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    private void OnGameManagerEvents(GameManager gm) {
-        gm.OnReset += ResetHandler;
-        gm.OnGameOver += GameOverHandler;
+    private void SubscribeToEvents(GameManager gm) {
+        gm.OnReset += ResetPosition;
+        gm.OnGameOver += ResetPosition;
     }
 
     private void MovePlayer() {
         float moveInput = Input.GetAxis("Vertical");
-        Vector3 movement = new Vector3(0.0f, moveInput, 0.0f) * moveSpeed * Time.deltaTime;
+        float newY = transform.position.y + moveInput * moveSpeed * Time.deltaTime;
+        float clampedY = Mathf.Clamp(newY, minY, maxY);
 
-        transform.Translate(movement);
-
-        Vector3 clampedPosition = transform.position;
-        clampedPosition.y = Mathf.Clamp(clampedPosition.y, minY, maxY);
-        transform.position = clampedPosition;
+        transform.position = new Vector3(transform.position.x, clampedY, transform.position.z);
     }
 
     private void ResetPosition() {
         transform.position = initialPosition;
-    }
-
-    private void ResetHandler() {
-        ResetPosition();
-    }
-
-    private void GameOverHandler() {
-        ResetPosition();
     }
 }

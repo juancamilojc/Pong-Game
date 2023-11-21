@@ -11,6 +11,7 @@ public enum GameState {
 public enum CommandType {
     play,
     pause,
+    resume,
     reset,
     gameover,
     noop
@@ -33,10 +34,10 @@ public class GameManager : MonoBehaviour {
     void Start() {
         playerScoreboard = GameObject.Find("PlayerScoreZone").GetComponent<Scoreboard>();
         iaScoreboard = GameObject.Find("IAScoreZone").GetComponent<Scoreboard>();
-        OnScoreboardEvents(playerScoreboard, iaScoreboard);
+        SubscribeToEvents(playerScoreboard, iaScoreboard);
 
         currentState = GameState.stopped;
-        InitializeGame();
+        Invoke("InitializeGame", 2.0f);
     }
 
     // Update is called once per frame
@@ -55,9 +56,8 @@ public class GameManager : MonoBehaviour {
                 }
             break;
             case GameState.paused:
-                if (command == CommandType.play) {
+                if (command == CommandType.resume) {
                     this.currentState = GameState.playing;
-                    OnPlay?.Invoke();
                 } else if (command == CommandType.reset) {
                     this.currentState = GameState.stopped;
                     OnReset?.Invoke();
@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    private void OnScoreboardEvents(Scoreboard player, Scoreboard ia) {
+    private void SubscribeToEvents(Scoreboard player, Scoreboard ia) {
         player.OnScored += ScoredPointHandler;
         ia.OnScored += ScoredPointHandler;
     }
