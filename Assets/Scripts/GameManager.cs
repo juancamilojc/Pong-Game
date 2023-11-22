@@ -2,14 +2,11 @@ using UnityEngine;
 
 public enum GameState {
     playing,
-    paused,
     stopped
 }
 
 public enum CommandType {
     play,
-    pause,
-    resume,
     reset,
     gameover,
     noop
@@ -18,8 +15,6 @@ public enum CommandType {
 public class GameManager : MonoBehaviour {
     public delegate void GameDelegate();
     public event GameDelegate OnPlay;
-    public event GameDelegate OnPause;
-    public event GameDelegate OnResume;
     public event GameDelegate OnReset;
     public event GameDelegate OnPointScored;
     public event GameDelegate OnGameOver;
@@ -43,24 +38,12 @@ public class GameManager : MonoBehaviour {
     void Update() {
         switch(currentState) {
             case GameState.playing:
-            if (command == CommandType.pause) {
-                    currentState = GameState.paused;
-                    OnPause?.Invoke();
-                } else if (command == CommandType.reset) {
+                if (command == CommandType.reset) {
                     currentState = GameState.stopped;
                     OnReset?.Invoke();
                 } else if (command == CommandType.gameover) {
                     currentState = GameState.stopped;
                     OnGameOver?.Invoke();
-                }
-            break;
-            case GameState.paused:
-                if (command == CommandType.resume) {
-                    currentState = GameState.playing;
-                    OnResume?.Invoke();
-                } else if (command == CommandType.reset) {
-                    currentState = GameState.stopped;
-                    OnReset?.Invoke();
                 }
             break;
             case GameState.stopped:

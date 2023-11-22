@@ -2,14 +2,12 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour {
     [SerializeField] private float speed = 11.0f;
-    private Vector3 initialPosition;
     private Rigidbody rb;
     private GameManager gameManager;
 
     // Awake is called when the script instance is being loaded
     void Awake() {
         rb = GetComponent<Rigidbody>();
-        initialPosition = transform.position;
         
         gameManager = FindObjectOfType<GameManager>();
         SubscribeToEvents(gameManager);
@@ -42,8 +40,8 @@ public class Ball : MonoBehaviour {
     }
 
     private void ResetPosition() {
+        transform.position = Vector3.zero;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        transform.position = initialPosition;
     }
 }
