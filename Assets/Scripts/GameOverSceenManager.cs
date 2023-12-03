@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameOverSceenManager : MonoBehaviour {
     private GameManager gameManager;
@@ -6,6 +7,8 @@ public class GameOverSceenManager : MonoBehaviour {
     public GameObject gameOverScreen;
     public GameObject playerWonText;
     public GameObject iaWonText;
+
+    public UnityEvent OnRestart;
 
     // Awake is called when the script instance is being loaded
     void Awake() {
@@ -30,9 +33,9 @@ public class GameOverSceenManager : MonoBehaviour {
     }
 
     public void OnRestartButtonClicked() {
-        HideGameOverScreen();
+        OnRestart?.Invoke();
+        Invoke(nameof(HideGameOverScreen), 0.4f);
         gameManager.SetCommand(CommandType.reset);
-        //gameManager.SetCommand(CommandType.play);
         gameManager.StartGame();
     }
 

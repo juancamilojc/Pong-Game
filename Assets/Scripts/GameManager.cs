@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         currentState = GameState.stopped;
-        Invoke(nameof(InitializeGame), 1.5f);
+        Invoke(nameof(InitializeGame), 2.0f);
     }
 
     // Update is called once per frame

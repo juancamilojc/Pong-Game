@@ -49,6 +49,6 @@ public class Ball : MonoBehaviour {
     }
 
     public void OnPointScored() {
-        Invoke(nameof(InitializeMovement), 0.3f);
+        Invoke(nameof(InitializeMovement), 1.0f);
     }
 }
