@@ -16,7 +16,7 @@ public class Player : MonoBehaviour {
     }
 
     void Update() {
-        if (gameManager.GetGameState() == GameState.playing) {
+        if (gameManager.State == GameState.playing) {
             Move();
         }
 

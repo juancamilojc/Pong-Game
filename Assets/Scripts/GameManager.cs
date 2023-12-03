@@ -16,22 +16,17 @@ public class GameManager : MonoBehaviour {
     public delegate void GameDelegate();
     public event GameDelegate OnPlay;
     public event GameDelegate OnReset;
-    public event GameDelegate OnPointScored;
     public event GameDelegate OnGameOver;
 
-    private Scoreboard playerScoreboard;
-    private Scoreboard iaScoreboard;
     private GameState currentState;
     private CommandType command;
 
+    public GameState State { get { return currentState; } }
+
     // Start is called before the first frame update
     void Start() {
-        playerScoreboard = GameObject.Find("PlayerScoreZone").GetComponent<Scoreboard>();
-        iaScoreboard = GameObject.Find("IAScoreZone").GetComponent<Scoreboard>();
-        SubscribeToEvents(playerScoreboard, iaScoreboard);
-
         currentState = GameState.stopped;
-        Invoke(nameof(InitializeGame), 2.5f);
+        Invoke(nameof(InitializeGame), 1.5f);
     }
 
     // Update is called once per frame
@@ -57,24 +52,15 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    private void SubscribeToEvents(Scoreboard player, Scoreboard ia) {
-        player.OnScored += ScoredPointHandler;
-        ia.OnScored += ScoredPointHandler;
-    }
-
     public void SetCommand(CommandType cmd) {
         command = cmd;
-    }
-
-    public GameState GetGameState() {
-        return currentState;
     }
 
     private void InitializeGame() {
         command = CommandType.play;
     }
 
-    void ScoredPointHandler() {
-        OnPointScored?.Invoke();
+    public void StartGame() {
+        Invoke(nameof(InitializeGame), 0.5f);
     }
 }

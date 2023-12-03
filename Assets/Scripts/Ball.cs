@@ -1,33 +1,36 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Ball : MonoBehaviour {
     [SerializeField] private float speed = 11.0f;
     private Rigidbody rb;
     private GameManager gameManager;
 
+    public UnityEvent PlayerScored;
+    public UnityEvent IAScored;
+
     // Awake is called when the script instance is being loaded
     void Awake() {
         rb = GetComponent<Rigidbody>();
-        
         gameManager = FindObjectOfType<GameManager>();
         SubscribeToEvents(gameManager);
     }
 
     // Update is called once per frame
     void Update() {
-        
+        if (transform.position.x > 11) {
+            PlayerScored?.Invoke();
+            ResetPosition();
+        } else if (transform.position.x < -11) {
+            IAScored?.Invoke();
+            ResetPosition();
+        }
     }
 
     private void SubscribeToEvents(GameManager gm) {
         gm.OnPlay += InitializeMovement;
         gm.OnReset += ResetPosition;
         gm.OnGameOver += ResetPosition;
-        gm.OnPointScored += ResetPosition;
-        gm.OnPointScored += InitializeMovement;
-    }
-
-    public void SetSpeed(float newSpeed) {
-        speed = newSpeed;
     }
 
     private void InitializeMovement() {
@@ -43,5 +46,9 @@ public class Ball : MonoBehaviour {
         transform.position = Vector3.zero;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+    }
+
+    public void OnPointScored() {
+        Invoke(nameof(InitializeMovement), 0.3f);
     }
 }

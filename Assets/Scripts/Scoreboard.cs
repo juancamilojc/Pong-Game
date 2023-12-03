@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
 
 public class Scoreboard : MonoBehaviour {
@@ -10,7 +10,9 @@ public class Scoreboard : MonoBehaviour {
     private int scoreIA = 0;
     private GameManager gameManager;
 
-    public event Action OnScored;
+    public UnityEvent PlayerWon;
+    public UnityEvent IAWon;
+    public UnityEvent PointScored;
 
     // Awake is called when the script instance is being loaded
     void Awake() {
@@ -31,42 +33,32 @@ public class Scoreboard : MonoBehaviour {
         gm.OnGameOver += ResetScoreboard;
     }
 
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Ball")) {
-            if (gameObject.CompareTag("PlayerScoreZone")) {
-                OnScored?.Invoke();
-                UpdatePlayerScore();
-            } else if (gameObject.CompareTag("IAScoreZone")) {
-                OnScored?.Invoke();
-                UpdateIAScore();
-            }
-        }
-    }
-
-    public int GetPlayerScore() {
-        return scorePlayer;
-    }
-
-    public int GetIAScore() {
-        return scoreIA;
-    }
-
     private void UpdatePlayerScore() {
         scorePlayer++;
         playerScoreText.text = scorePlayer.ToString();
-        CheckWinCondition(scorePlayer);
+
+        if (CheckWinCondition(scorePlayer)) {
+            gameManager.SetCommand(CommandType.gameover);
+            PlayerWon?.Invoke();
+        } else {
+            PointScored?.Invoke();
+        }
     }
 
     private void UpdateIAScore() {
         scoreIA++;
         iaScoreText.text = scoreIA.ToString();
-        CheckWinCondition(scoreIA);
+
+        if (CheckWinCondition(scoreIA)) {
+            gameManager.SetCommand(CommandType.gameover);
+            IAWon?.Invoke();
+        } else {
+            PointScored?.Invoke();
+        }
     }
 
-    private void CheckWinCondition(int score) {
-        if (score >= finalScore) {
-            gameManager.SetCommand(CommandType.gameover);
-        }
+    private bool CheckWinCondition(int score) {
+        return score >= finalScore;
     }
 
     private void ResetScoreboard() {
@@ -74,5 +66,13 @@ public class Scoreboard : MonoBehaviour {
         scoreIA = 0;
         playerScoreText.text = "0";
         iaScoreText.text = "0";
+    }
+
+    public void OnPlayerScored() {
+        UpdatePlayerScore();
+    }
+
+    public void OnIAScored() {
+        UpdateIAScore();
     }
 }

@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class IA : MonoBehaviour {
     [SerializeField] private float moveSpeed = 2.0f;
-    [SerializeField] private float errorChance = 0.4f;
-    private readonly float smoothness = 2.0f;
+    [SerializeField] private float errorChance = 0.2f;
+    private readonly float smoothness = 1.5f;
     private readonly float minY = -4.5f;
     private readonly float maxY = 4.5f;
     private Vector3 initialPosition;
@@ -27,13 +27,12 @@ public class IA : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (gameManager.GetGameState() == GameState.playing) {
+        if (gameManager.State == GameState.playing) {
             Move();
         }
     }
 
     private void SubscribeToEvents(GameManager gm) {
-        gm.OnPointScored += ResetPosition;
         gm.OnReset += ResetPosition;
         gm.OnGameOver += ResetPosition;
     }
@@ -50,19 +49,16 @@ public class IA : MonoBehaviour {
             float newY = Mathf.Clamp(predictedY, minY, maxY);
 
             float smoothMovement = Mathf.Lerp(transform.position.y, newY, Time.deltaTime * smoothness);
+
             transform.position = new Vector3(transform.position.x, smoothMovement, transform.position.z);
         }
     }
 
-    public void SetSpeed(float newSpeed) {
-        moveSpeed = newSpeed;
-    }
-
-    public void SetErrorChance(float newErrorChance) {
-        errorChance = Mathf.Clamp01(newErrorChance);
-    }
-
-    public void ResetPosition() {
+    private void ResetPosition() {
         transform.position = initialPosition;
+    }
+
+    public void OnPointScored() {
+        ResetPosition();
     }
 }
