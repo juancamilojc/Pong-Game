@@ -10,7 +10,6 @@ public class Player : MonoBehaviour, IPaddle {
     // Awake is called when the script instance is being loaded
     void Awake() {
         initialPosition = transform.position;
-
         gameManager = FindObjectOfType<GameManager>();
         SubscribeToEvents(gameManager);
     }

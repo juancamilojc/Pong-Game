@@ -3,6 +3,7 @@ using UnityEngine;
 public class PauseMenu : MonoBehaviour {
     public static bool isPaused = false;
     [SerializeField] private GameObject pauseMenuUI;
+    [SerializeField] private Animator pauseAnimator;
     private GameManager gameManager;
 
     // Awake is called when the script instance is being loaded
@@ -24,19 +25,16 @@ public class PauseMenu : MonoBehaviour {
     }
 
     private void Resume() {
-        HidePauseMenu();
+        pauseAnimator.SetTrigger("Resume");
+        Invoke(nameof(HidePauseMenu), 0.3f);
         Time.timeScale = 1f;
         isPaused = false;
     }
 
     private void Pause() {
-        ShowPauseMenu();
+        pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         isPaused = true;
-    }
-
-    private void ShowPauseMenu() {
-        pauseMenuUI.SetActive(true);
     }
 
     private void HidePauseMenu() {

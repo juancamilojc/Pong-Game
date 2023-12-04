@@ -48,6 +48,6 @@ public class Ball : MonoBehaviour {
 
     public void OnPointScored() {
         ResetPosition();
-        Invoke(nameof(InitializeMovement), 1.2f);
+        Invoke(nameof(InitializeMovement), 1.0f);
     }
 }

@@ -1,13 +1,11 @@
 using UnityEngine;
-using UnityEngine.Events;
 
 public class GameOver : MonoBehaviour {
-    private GameManager gameManager;
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private GameObject playerWonText;
     [SerializeField] private GameObject iaWonText;
-
-    public UnityEvent OnRestart;
+    [SerializeField] private Animator gameOverAnimator;
+    private GameManager gameManager;
 
     // Awake is called when the script instance is being loaded
     void Awake() {
@@ -32,8 +30,8 @@ public class GameOver : MonoBehaviour {
     }
 
     public void OnRestartButtonClicked() {
-        OnRestart?.Invoke();
-        Invoke(nameof(HideGameOver), 0.3f);
+        gameOverAnimator.SetTrigger("Restart");
+        Invoke(nameof(HideGameOver), 0.2f);
         gameManager.SetCommand(CommandType.reset);
         gameManager.StartGame();
     }

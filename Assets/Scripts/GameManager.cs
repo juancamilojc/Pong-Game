@@ -18,8 +18,8 @@ public class GameManager : MonoBehaviour {
     public event GameDelegate OnReset;
     public event GameDelegate OnGameOver;
 
-    private GameState currentState = GameState.stopped;
-    private CommandType command = CommandType.noop;
+    private GameState currentState;
+    private CommandType command;
 
     public GameState State { get { return currentState; } }
 
@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour {
     }
 
     void Start() {
-        Invoke(nameof(InitializeGame), 1.2f);
+        Invoke(nameof(InitializeGame), 1.0f);
     }
 
     // Update is called once per frame
@@ -65,6 +65,6 @@ public class GameManager : MonoBehaviour {
     }
 
     public void StartGame() {
-        Invoke(nameof(InitializeGame), 1.2f);
+        Invoke(nameof(InitializeGame), 0.5f);
     }
 }

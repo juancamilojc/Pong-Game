@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using System.Collections;
 
 public class Scoreboard : MonoBehaviour {
     private TextMeshProUGUI playerScoreText;
     private TextMeshProUGUI iaScoreText;
     [SerializeField] private int finalScore = 3;
+    [SerializeField] private GameObject scoreTextAnimation;
     private int scorePlayer = 0;
     private int scoreIA = 0;
     private GameManager gameManager;
@@ -41,6 +43,7 @@ public class Scoreboard : MonoBehaviour {
             gameManager.SetCommand(CommandType.gameover);
             PlayerWon?.Invoke();
         } else {
+            StartCoroutine(scoreAnimation());
             PointScored?.Invoke();
         }
     }
@@ -53,6 +56,7 @@ public class Scoreboard : MonoBehaviour {
             gameManager.SetCommand(CommandType.gameover);
             IAWon?.Invoke();
         } else {
+            StartCoroutine(scoreAnimation());
             PointScored?.Invoke();
         }
     }
@@ -74,5 +78,11 @@ public class Scoreboard : MonoBehaviour {
 
     public void OnIAScored() {
         UpdateIAScore();
+    }
+
+    private IEnumerator scoreAnimation() {
+        scoreTextAnimation.SetActive(true);
+        yield return new WaitForSeconds(0.8f);
+        scoreTextAnimation.SetActive(false);
     }
 }
