@@ -18,15 +18,19 @@ public class GameManager : MonoBehaviour {
     public event GameDelegate OnReset;
     public event GameDelegate OnGameOver;
 
-    private GameState currentState;
-    private CommandType command;
+    private GameState currentState = GameState.stopped;
+    private CommandType command = CommandType.noop;
 
     public GameState State { get { return currentState; } }
 
-    // Start is called before the first frame update
-    void Start() {
+    // Awake is called when the script instance is being loaded
+    void Awake() {
         currentState = GameState.stopped;
-        Invoke(nameof(InitializeGame), 2.0f);
+        command = CommandType.noop;
+    }
+
+    void Start() {
+        Invoke(nameof(InitializeGame), 1.2f);
     }
 
     // Update is called once per frame
@@ -61,6 +65,6 @@ public class GameManager : MonoBehaviour {
     }
 
     public void StartGame() {
-        Invoke(nameof(InitializeGame), 0.5f);
+        Invoke(nameof(InitializeGame), 1.2f);
     }
 }

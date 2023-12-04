@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class IA : MonoBehaviour {
+public class IA : MonoBehaviour, IPaddle {
     [SerializeField] private float moveSpeed = 2.0f;
     [SerializeField] private float errorChance = 0.2f;
     private readonly float smoothness = 1.5f;
@@ -37,7 +37,7 @@ public class IA : MonoBehaviour {
         gm.OnGameOver += ResetPosition;
     }
 
-    private void Move() {
+    public void Move() {
         if (ball != null) {
             float timeToIntercept = Mathf.Abs((transform.position.x - ball.position.x) / moveSpeed);
             float predictedY = ball.position.y + (ball.GetComponent<Rigidbody>().velocity.y * timeToIntercept);
@@ -54,7 +54,7 @@ public class IA : MonoBehaviour {
         }
     }
 
-    private void ResetPosition() {
+    public void ResetPosition() {
         transform.position = initialPosition;
     }
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour, IPaddle {
     [SerializeField] private float moveSpeed = 10.0f;
     private readonly float minY = -4.5f;
     private readonly float maxY = 4.5f;
@@ -26,13 +26,14 @@ public class Player : MonoBehaviour {
             gameManager.SetCommand(CommandType.play);
         }
     }
+    
 
     private void SubscribeToEvents(GameManager gm) {
         gm.OnReset += ResetPosition;
         gm.OnGameOver += ResetPosition;
     }
 
-    private void Move() {
+    public void Move() {
         float moveInput = Input.GetAxis("Vertical");
         float newY = transform.position.y + moveInput * moveSpeed * Time.deltaTime;
         float clampedY = Mathf.Clamp(newY, minY, maxY);
@@ -40,7 +41,7 @@ public class Player : MonoBehaviour {
         transform.position = new Vector3(transform.position.x, clampedY, transform.position.z);
     }
 
-    private void ResetPosition() {
+    public void ResetPosition() {
         transform.position = initialPosition;
     }
 }

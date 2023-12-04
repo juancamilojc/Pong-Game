@@ -34,7 +34,7 @@ public class GameOverSceenManager : MonoBehaviour {
 
     public void OnRestartButtonClicked() {
         OnRestart?.Invoke();
-        Invoke(nameof(HideGameOverScreen), 0.4f);
+        Invoke(nameof(HideGameOverScreen), 0.3f);
         gameManager.SetCommand(CommandType.reset);
         gameManager.StartGame();
     }
