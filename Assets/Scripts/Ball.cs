@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class Ball : MonoBehaviour {
-    [SerializeField] private float speed = 11.0f;
+    [SerializeField] private float speed = 12.0f;
     private Rigidbody rb;
     private GameManager gameManager;
 
@@ -20,10 +20,8 @@ public class Ball : MonoBehaviour {
     void Update() {
         if (transform.position.x > 11) {
             PlayerScored?.Invoke();
-            ResetPosition();
         } else if (transform.position.x < -11) {
             IAScored?.Invoke();
-            ResetPosition();
         }
     }
 
@@ -49,6 +47,7 @@ public class Ball : MonoBehaviour {
     }
 
     public void OnPointScored() {
+        ResetPosition();
         Invoke(nameof(InitializeMovement), 1.2f);
     }
 }

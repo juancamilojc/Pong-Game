@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-public class MainMenuManager : MonoBehaviour {
+public class MainMenu : MonoBehaviour {
     public UnityEvent OnStartGame;
 
     public void OnStartButtonClicked() {

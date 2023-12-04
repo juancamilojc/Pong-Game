@@ -19,12 +19,6 @@ public class Player : MonoBehaviour, IPaddle {
         if (gameManager.State == GameState.playing) {
             Move();
         }
-
-        if (Input.GetKeyDown(KeyCode.R)) {
-            gameManager.SetCommand(CommandType.reset);
-        } else if (Input.GetKeyDown(KeyCode.Space)) {
-            gameManager.SetCommand(CommandType.play);
-        }
     }
     
 
